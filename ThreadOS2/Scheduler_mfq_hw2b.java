@@ -153,22 +153,37 @@ public class Scheduler extends Thread
 
 		if ( currentTCB.getTerminated( ) == true ) {
 		    // Remove this thread from queue[level]
+			queue.remove(currentTCB);
 		    // Return this thread id
+			returnTid(currentTCB.getTid());
 		    // slice[level] must be 0
 		    continue;
 		}
 		current = currentTCB.getThread( );
 
-		if ( ( current != null ) ) {
-		    // If current is alive, resume it otherwise start it.
+		// If current is alive, resume it otherwise start it.
 		    // The same logic as Scheduler_rr.java
 		    // Just copy the logic here.
+		if(current != null){
+		if (  current.isAlive()  ) 
+			current.resume();
+		else
+        	current.start();
 		}
+		    
+		
 
 		// Scheduler should sleep here.
+		schedulerSleep();
 		// If current is alive, suspend it.
 		// The same logic as Scheduler_rr.java
 		// Just copy the logic here
+		synchronized( queue ) {
+		    if ( current != null && current.isAlive( ) )
+			current.suspend( );
+		    queue.remove( currentTCB ); // rotate this TCB to the end
+		    queue.add( currentTCB );
+		
 
 		prevTCB = currentTCB;
 		// This is the heart of Prog2B!!!!
