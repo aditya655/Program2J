@@ -183,6 +183,7 @@ public class Scheduler extends Thread
 			current.suspend( );
 		    queue.remove( currentTCB ); // rotate this TCB to the end
 		    queue.add( currentTCB );
+		}
 		
 
 		prevTCB = currentTCB;
@@ -191,6 +192,8 @@ public class Scheduler extends Thread
 		// if slice[level] returns to 0,
 		//   currentThread must go to the next level or
 		//   rotate back in queue[2]
+		if(slice[level] == 0)
+		  queue[2].remove(currentTCB);
 	    } catch ( NullPointerException e3 ) { };
 	}
     }
