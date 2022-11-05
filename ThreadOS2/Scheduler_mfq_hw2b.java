@@ -153,10 +153,11 @@ public class Scheduler extends Thread
 
 		if ( currentTCB.getTerminated( ) == true ) {
 		    // Remove this thread from queue[level]
-			queue.remove(currentTCB);
+			queue[level].remove(currentTCB);
 		    // Return this thread id
 			returnTid(currentTCB.getTid());
 		    // slice[level] must be 0
+            slice[level] = 0;
 		    continue;
 		}
 		current = currentTCB.getThread( );
@@ -181,8 +182,8 @@ public class Scheduler extends Thread
 		synchronized( queue ) {
 		    if ( current != null && current.isAlive( ) )
 			current.suspend( );
-		    queue.remove( currentTCB ); // rotate this TCB to the end
-		    queue.add( currentTCB );
+		    queue[level].remove( currentTCB ); // rotate this TCB to the end
+		    queue[level].add( currentTCB );
 		}
 		
 
